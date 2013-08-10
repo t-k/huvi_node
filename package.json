@@ -1,0 +1,34 @@
+{
+    "name": "vlchat",
+    "version": "0.0.1",
+    "main": "app.coffee",
+    "scripts": {
+      "test": "make test"
+    },
+    "engines": {
+      "node": ">= 0.8.0"
+    },
+    "dependencies": {
+        "coffee-script": ">= 1.3",
+        "socket.io": "0.9.14",
+        "redis": "0.8.4",
+        "hiredis": "0.1.15",
+        "cluster": "0.7.7",
+        "msgpack": "0.1.8",
+        "sequelize": "1.7.0-alpha2",
+        "mysql": "2.0.0-alpha8",
+        "bcrypt": "0.7.6",
+        "async": "0.2.9"
+    },
+    "devDependencies": {
+        "mocha": "latest",
+        "colors": "latest",
+        "hotnode": "latest",
+        "should": "latest",
+        "tobi": "latest",
+        "sinon": "latest",
+        "nodetime": "latest",
+        "socket.io-client": "0.9.11",
+        "database-cleaner ": "latest"
+    }
+}

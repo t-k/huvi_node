@@ -1,0 +1,3 @@
+{
+  "glob": ["app/*/*.coffee", "lib/*.coffee", "config/*.coffee", "README.md"]
+}
