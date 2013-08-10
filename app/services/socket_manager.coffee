@@ -15,7 +15,7 @@ class SocketManager
     @addToRedis socket
     # @logger.info { msg: "SocketManager#addSockets: #{socket}"}
     # if @sockets[socket.category_id] == undefined
-    @_subscribeRoom(socket.category_id)
+    # @_subscribeRoom(socket.category_id)
     @sockets[socket.category_id] ||= {}
     @sockets[socket.category_id][socket.token] = socket
     @findUser socket
