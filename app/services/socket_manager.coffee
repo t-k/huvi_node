@@ -3,7 +3,7 @@ utils = require "../../lib/utils"
 LISTPREF = "category:"
 CHAN_PREFIX_ROOM = "HUVI:ROOM:"
 class SocketManager
-  constructor: (redis logger) ->
+  constructor: (redis, logger) ->
     @sockets = {}
     @Redis = redis
     @RedisPub  = redis
@@ -31,8 +31,11 @@ class SocketManager
       if target# target token
         try
           targetSock = @sockets[category_id][socket.token]
-          @matched user, targetSock
-        catch
+          if targetSock
+            @matched user, targetSock
+          else
+            @findUser socket
+        catch e
           @findUser socket
 
   matched: (user, target) ->
@@ -45,7 +48,7 @@ class SocketManager
     @sendMatched(target, id)
 
   sendMatched: (socket, id) ->
-    msg = 
+    msg =
       room_id: id
     socket.emit("matched", msg)
 

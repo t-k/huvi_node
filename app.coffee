@@ -3,7 +3,6 @@ App =
   Services: {}
   Loggers:  {}
   Redis:    {}
-  Caches:   {}
 
 ## td-agent Logger
 App.Loggers.TdLogger = require "./lib/logger"
@@ -32,26 +31,8 @@ socketIO.Manager::generateId = ->
     )
   return NAME_PREFIX + rand.toString('base64').replace(/\//g, '_').replace(/\+/g, '-')
 
-DEFAULT_PORT = Config.server.port || 8080
-port = process.argv[2] || DEFAULT_PORT
-io = socketIO.listen port
-App.Loggers.TdLogger.info { msg: "server listens on port #{port}" }
-
+io = socketIO.listen 80
 ## For production
-io.configure "production", ->
-  io.set "log level", 2
-
-## For labo2
-io.configure "staging", ->
-  io.set "log level", 3
-
-## For test
-io.configure "test", ->
-  io.set "log level", 3
-
-## For development
-io.configure "development", ->
-  io.set "log level", 3
 
 ## Redis store
 redis = require "redis"
@@ -63,13 +44,13 @@ console.log "redisOpts:", redisOpts
 redisPub    = redis.createClient(redisOpts.port, redisOpts.host, redisOpts)
 redisSub    = redis.createClient(redisOpts.port, redisOpts.host, redisOpts)
 redisClient = redis.createClient(redisOpts.port, redisOpts.host, redisOpts)
-
+console.log "a"
 ## Socket.io config
 utils = require "./lib/utils"
 # msgpack = require "msgpack"
-
+console.log "b"
 Static = require('socket.io').Static
-
+console.log "c"
 io.configure ->
   io.enable "browser client minification"
   io.enable "browser client etag"
@@ -122,15 +103,15 @@ io.configure ->
     unpack: (data) ->
       return utils.munpack(data)
   )
-
+console.log "d"
 ## Redis
 App.Redis.Pub = redisPub
 App.Redis.Sub = redisSub
-
+console.log "e"
 ## Socket connection handler
-chatHandler = require("./app/sockets/socket_handler")(App)
+socketHandler = require("./app/sockets/socket_handler")(App)
 io.of("/chat").on "connection", socketHandler.onConnection
-
+console.log "f"
 ## Graceful shutdown
 process.on 'SIGTERM', ->
   App.Loggers.TdLogger.info { msg: "shutting down" }

@@ -11,30 +11,15 @@ generateId = ->
   time = Math.round(Date.now() / 1000)
   "#{time}:#{generateToken()}"
 
-class RoomsMessageHandler
+class SocketHandler
   constructor: (App) ->
     @App = App
     SocketManager = require "../services/socket_manager"
     @SCM = new SocketManager(
       App.Redis.Pub
-      App.ZMQ.Sub
+      App.Redis.Sub
       App.Loggers.TdLogger
     )
-    @App.Redis.Sub.on "message", (msg) =>
-      if msg.toString() != ""
-        msgToS = msg.toString()
-        data = msgToS.match(/^(\S+)\s(.+)$/)
-        if data && data[1]
-          chan = data[1]
-          if chan.match(/^HUVI:ROOM:\d+$/)
-            tocategory_id = parseInt chan.replace("HUVI:ROOM:", "")
-            if tocategory_id
-              message = utils.unpack(data[2])
-              ev = message.ev
-              body = message.body
-              @SCM.sendToRoom(tocategory_id, ev, body)
-        else
-          Log.error { msg: "/room :", message: msgToS }
 
   onConnection: (socket) =>
     # App = @App
@@ -48,13 +33,11 @@ class RoomsMessageHandler
     # category_id
     # as: 1 OR 5
     socket.on "enter_waiting_room", (data) =>
-      if data.category_id && data.as && (parseInt(data.as) == 1 && parseInt(data.as) == 5)
+      if data.category_id
         Log.info { msg: "enter_waiting_room" }
-        socket.as = (parseInt(data.as)
-        socket.category_id = (parseInt(data.category_id)
+        socket.as = parseInt(data.as)
+        socket.category_id = parseInt(data.category_id)
         @SCM.addSockets parseInt(data.category_id), socket
-      else
-        Log.info { msg: "enter_waiting_room invalid params" }
     ### END enter_waiting_room ###
 
     # enter_room
@@ -74,10 +57,10 @@ class RoomsMessageHandler
     socket.on "message", (data) =>
       Log.info { msg: "/room message"}
       if socket.room && socket.room == data.room_id && data.content
-        message = 
+        message =
           content: data.content
         socket.emit "message_created", message
-        socket.broadcast.to(socket.room).emit('message_created', message
+        socket.broadcast.to(socket.room).emit 'message_created', message
       else
         socket.emit "invalid", {}
     ### END message ###
