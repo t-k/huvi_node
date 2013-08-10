@@ -5,7 +5,7 @@ App =
   Redis:    {}
 
 ## td-agent Logger
-App.Loggers.TdLogger = require "./lib/logger"
+# App.Loggers.TdLogger = require "./lib/logger"
 
 # load ./config/json/env.json
 Config = require "./config/config"
@@ -31,7 +31,7 @@ socketIO.Manager::generateId = ->
     )
   return NAME_PREFIX + rand.toString('base64').replace(/\//g, '_').replace(/\+/g, '-')
 
-io = socketIO.listen 80
+io = socketIO.listen 8080
 ## For production
 
 ## Redis store
@@ -56,28 +56,9 @@ io.configure ->
   io.enable "browser client etag"
   io.enable "browser client gzip"
   _static = new Static(io)
-  io.static.add "/socket.io.min.js",
-    mime:
-      type: "application/javascript"
-      encoding: "utf8"
-      gzip: true
-
-    file: "#{Config.app_root}/public/socket.io.min.js"
-
-  io.static.add "/WebSocketMain.swf",
-    mime:
-      type: "application/x-shockwave-flash"
-
-    file: "#{Config.app_root}/public/WebSocketMain.swf"
-
-  io.static.add "/WebSocketMainInsecure.swf",
-    mime:
-      type: "application/x-shockwave-flash"
-
-    file: "#{Config.app_root}/public/WebSocketMainInsecure.swf"
 
   io.set 'public', _static
-  io.set "logger", App.Loggers.TdLogger
+  # io.set "logger", App.Loggers.TdLogger
   io.set "transports", [
     "websocket"
     "flashsocket"
@@ -114,8 +95,8 @@ io.of("/chat").on "connection", socketHandler.onConnection
 console.log "f"
 ## Graceful shutdown
 process.on 'SIGTERM', ->
-  App.Loggers.TdLogger.info { msg: "shutting down" }
-  App.Loggers.TdLogger.close()
+  # App.Loggers.TdLogger.info { msg: "shutting down" }
+  # App.Loggers.TdLogger.close()
   App.Redis.Pub.close()
   App.Redis.Sub.close()
   redisPub.quit()

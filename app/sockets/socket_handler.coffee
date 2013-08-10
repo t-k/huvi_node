@@ -17,16 +17,15 @@ class SocketHandler
     SocketManager = require "../services/socket_manager"
     @SCM = new SocketManager(
       App.Redis.Pub
-      App.Redis.Sub
-      App.Loggers.TdLogger
+      # App.Loggers.TdLogger
     )
 
   onConnection: (socket) =>
     # App = @App
-    Log = @App.Loggers.TdLogger
+    # Log = @App.Loggers.TdLogger
 
     socket.token = generateId()
-    Log.info { msg: "Client connected", socket: {id: socket.id, token: socket.token} }
+    # Log.info { msg: "Client connected", socket: {id: socket.id, token: socket.token} }
     socket.emit "connected", {}
 
     # enter_waiting_room
@@ -34,7 +33,7 @@ class SocketHandler
     # as: 1 OR 5
     socket.on "enter_waiting_room", (data) =>
       if data.category_id
-        Log.info { msg: "enter_waiting_room" }
+        # Log.info { msg: "enter_waiting_room" }
         socket.as = parseInt(data.as)
         socket.category_id = parseInt(data.category_id)
         @SCM.addSockets parseInt(data.category_id), socket
@@ -43,7 +42,7 @@ class SocketHandler
     # enter_room
     # ================================
     socket.on "enter_room", (data) =>
-      Log.info { msg: "/room enter_room"}
+      # Log.info { msg: "/room enter_room"}
       if socket.room_id
         socket.room = socket.room_id
         socket.join(socket.room)
@@ -55,7 +54,7 @@ class SocketHandler
     # message
     # ================================
     socket.on "message", (data) =>
-      Log.info { msg: "/room message"}
+      # Log.info { msg: "/room message"}
       if socket.room && socket.room == data.room_id && data.content
         message =
           content: data.content
@@ -68,13 +67,13 @@ class SocketHandler
     # disconnect
     # ================================
     socket.on "disconnect", =>
-      Log.info { msg: "/room disconnect"}
+      # Log.info { msg: "/room disconnect"}
       socket.leave(socket.room) if socket.room
       @SCM.deleteSockets socket if socket.category_id
       try
         socket.del "client"
       catch e
-        Log.error { msg: "/room socket.del client", e: e }
+        # Log.error { msg: "/room socket.del client", e: e }
     ### END disconnect ###
 
 module.exports = (App) ->

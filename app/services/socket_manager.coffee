@@ -3,17 +3,17 @@ utils = require "../../lib/utils"
 LISTPREF = "category:"
 CHAN_PREFIX_ROOM = "HUVI:ROOM:"
 class SocketManager
-  constructor: (redis, logger) ->
+  constructor: (redis) ->
     @sockets = {}
     @Redis = redis
     @RedisPub  = redis
     @RedisSub  = redis
-    @logger  = logger
+    # @logger  = logger
     @_chans  = {}
 
   addSockets: (category_id, socket) ->
     @addToRedis socket
-    @logger.info { msg: "SocketManager#addSockets: #{socket}"}
+    # @logger.info { msg: "SocketManager#addSockets: #{socket}"}
     # if @sockets[socket.category_id] == undefined
     @_subscribeRoom(socket.category_id)
     @sockets[socket.category_id] ||= {}
@@ -78,7 +78,7 @@ class SocketManager
     try
       delete @sockets[category_id][socket.token]
     catch err
-      @logger.error { msg: "SocketManager#deleteSockets:", err: err }
+      # @logger.error { msg: "SocketManager#deleteSockets:", err: err }
 
   _findRoomsSockets: (category_id) ->
     @sockets[category_id]
