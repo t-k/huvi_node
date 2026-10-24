@@ -16,7 +16,7 @@
         "cluster": "0.7.7",
         "msgpack": "0.1.8",
         "sequelize": "1.7.0-alpha2",
-        "mysql": "2.0.0-alpha8",
+        "mysql": "2.14.0",
         "bcrypt": "0.7.6",
         "async": "0.2.9"
     },
